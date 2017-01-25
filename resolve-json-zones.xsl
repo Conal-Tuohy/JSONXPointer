@@ -37,8 +37,6 @@
 			<xsl:call-template name="decode">
 				<xsl:with-param name="text" select="$xpath"/>
 			</xsl:call-template>
-<!--			<xsl:value-of select="$xpath"/>
--->
 			<xsl:text>}</xsl:text>
 		</xsl:attribute>
 	</xsl:template>
