@@ -2,11 +2,59 @@
 A demonstration of the use of XPointer URIs containing XPath 3.1 expressions to refer to JSON documents
 
 The example demonstrates how a TEI XML file could use external JSON data files to specify the geometric properties of
-`<zone>` elements. In the example, the TEI XML file `json-zone-test.xml` uses a custom attribute `pointsRef` on a `<zone>`
-element to point, using an XPointer URI, to geometric data contained with an external geoJSON data file `zones.json`.
+`<zone>` elements (which specify geometric regions on a writing surface). Normally, a TEI `<zone>` specifies the vertices of the region directly as attributes. One method is to use the `points` attribute e.g.
+```xml
+<zone points="103.71093749999999,-43.83452678223682
+  103.71093749999999,-32.54681317351514
+  131.484375,-32.54681317351514
+  131.484375,-43.83452678223682
+  103.71093749999999,-43.83452678223682"/>
+```
+In this example, the TEI XML file `json-zone-test.xml` instead uses a custom attribute `pointsRef` on a `<zone>`
+element to point, using an XPointer URI, to geometric data contained with an external geoJSON data file `zones.json`, as shown:
+```json
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [103.71093749999999, -43.83452678223682],
+            [103.71093749999999, -32.54681317351514],
+            [131.484375, -32.54681317351514],
+            [131.484375, -43.83452678223682],
+            [103.71093749999999, -43.83452678223682]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [121.640625, -20.632784250388013],
+            [121.640625, -11.178401873711772],
+            [138.8671875, -11.178401873711772],
+            [138.8671875, -20.632784250388013],
+            [121.640625, -20.632784250388013]
+          ]
+        ]
+      }
+    }
+  ]
+}
+```
+The `pointsRef` URI resolves to a list of points in the same format as that required by the standard TEI `points` attribute, meaning that a document using this mechanism can be converted to standard TEI by replacing each `pointsRef` attribute with a `points` attribute whose value is set to the result of resolving the `pointsRef` URI. This demonstration performs this transformation.
 
-The test file includes both a "simple" `pointsRef` which literally specifies an XPointer URI, and an "abbreviated" `pointsRef`
-which uses the TEI `<prefixDef>` mechanism to define a custom `geojson:` URI scheme.
+The test TEI file includes two `<zone>` elements; one of which has a `pointsRef` which literally specifies an XPointer URI in full, and the other of which specifies an "abbreviated" `pointsRef`
+by using the TEI `<prefixDef>` mechanism to define a custom `geojson:` URI scheme.
 
 The data flow is controlled by the XProc pipeline `resolve-json-zones.xpl`, and consists of these steps:
 
