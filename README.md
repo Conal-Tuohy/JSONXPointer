@@ -56,6 +56,11 @@ The `pointsRef` URI resolves to a list of points in the same format as that requ
 The test TEI file includes two `<zone>` elements; one of which has a `pointsRef` which literally specifies an XPointer URI in full, and the other of which specifies an "abbreviated" `pointsRef`
 by using the TEI `<prefixDef>` mechanism to define a custom `geojson:` URI scheme.
 
+```xml
+<zone pointsRef="#xpath(json-doc(%27zones.json%27)%3Ffeatures%3F1%3Fgeometry%3Fcoordinates%3F1%3F*!string-join(string-join(%3F*%2C%27%2C%27)%2C%27%20%27))"/>
+<zone pointsRef="geojson:zones.json#2"/>
+```
+
 The data flow is controlled by the XProc pipeline `resolve-json-zones.xpl`, and consists of these steps:
 
 1. The `json-zone-test.xml` is first transformed by the `resolve-prefixes.xsl` stylesheet, which replaces the custom URIs
